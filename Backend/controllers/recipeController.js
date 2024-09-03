@@ -1,16 +1,73 @@
 import { Op } from "sequelize";
 import Recipe from "../models/Recipe.js";
+import AWSService from "../services/awsService.js";
 
-// Create a new recipe
 export const createRecipe = async (req, res) => {
   try {
-    const userId = req.user.id
-    const data = req.body
-    // const recipe = await Recipe.create(data);
-    // res.status(201).json(recipe);
-    res.status(201).json({...data, id : userId});
+    const userId = req.user.id;
+    const {
+      title,
+      imageUrl,
+      ingredients,
+      instructions,
+      dietaryPreference,
+      cookingTime,
+      servings,
+      categories,
+      preparationTime,
+      difficultyLevel,
+    } = req.body;
+
+    // Include the image URL in the recipe data if it exists in req
+    const recipeData = {
+      title,
+      imageUrl,
+      ingredients,
+      instructions,
+      dietaryPreference,
+      cookingTime,
+      servings,
+      categories,
+      preparationTime,
+      difficultyLevel,
+      averageRating:0,
+      userId, // Set user ID
+    };
+
+    console.log(recipeData);
+
+    // Create the recipe in the database
+    const recipe = await Recipe.create(recipeData);
+
+    // Respond with the created recipe
+    res.status(201).json(recipe);
   } catch (error) {
+    console.log(error);
     res.status(400).json({ message: error.message });
+  }
+};
+
+export const uploadImage = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Ensure file is present in req.file
+    if (!req.file) {
+      return res.status(404).json({ message: "No file uploaded." });
+    }
+
+    const { originalname, mimetype, buffer } = req.file;
+    const key = `${userId}${Date.now()}-${originalname}`;
+    console.log(key, buffer, mimetype);
+
+    const awsService = new AWSService();
+    const uploadResult = await awsService.uploadToS3(key, buffer, mimetype);
+    return res.status(200).json({ url: uploadResult.Location });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "Internal Server Error - Error uploading file" });
   }
 };
 
@@ -46,7 +103,6 @@ export const updateRecipe = async (req, res) => {
     if (!updated) return res.status(404).json({ message: "Recipe not found" });
 
     res.status(200).json({ message: "Recipe updated" });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -70,7 +126,12 @@ export const deleteRecipe = async (req, res) => {
 // Browse and Search Recipes with Filters
 export const browseAndSearchRecipes = async (req, res) => {
   try {
-    const { dietaryPreference, difficultyLevel, maxPreparationTime, searchTerm } = req.query;
+    const {
+      dietaryPreference,
+      difficultyLevel,
+      maxPreparationTime,
+      searchTerm,
+    } = req.query;
 
     // Build the query filters dynamically based on the request parameters
     let filters = {};
@@ -102,6 +163,8 @@ export const browseAndSearchRecipes = async (req, res) => {
 
     res.status(200).json(recipes);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching recipes', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching recipes", error: error.message });
   }
 };

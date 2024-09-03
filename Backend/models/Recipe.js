@@ -14,8 +14,12 @@ const Recipe = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    imageUrl: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     ingredients: {
-      type: DataTypes.JSONB, // Store ingredients as a JSON array
+      type: DataTypes.TEXT, // Store ingredients as a JSON array
       allowNull: false,
     },
     instructions: {
@@ -35,7 +39,7 @@ const Recipe = sequelize.define(
       allowNull: false,
     },
     categories: {
-      type: DataTypes.JSONB, // Store categories as a JSON array
+      type: DataTypes.STRING, // Store categories as a JSON array
       allowNull: false,
     },
     preparationTime: {

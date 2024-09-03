@@ -4,8 +4,6 @@ export const authorization = async (req, res, next) => {
   try {
 
 const token = req.headers.authorization.split(" ")[1];
-
-
     if (!token) {
       return res
       .status(401)
@@ -27,6 +25,6 @@ const token = req.headers.authorization.split(" ")[1];
     req.user = user; // Attach user object to request
     next();
   } catch (error) {
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({ message: "Internal Server Error. Failed to authenticate" });
   }
 };

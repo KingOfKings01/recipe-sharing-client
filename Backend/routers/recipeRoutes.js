@@ -1,4 +1,5 @@
 import express from 'express';
+import multer from 'multer';
 import {
   createRecipe,
   getAllRecipes,
@@ -6,13 +7,22 @@ import {
   updateRecipe,
   deleteRecipe,
   browseAndSearchRecipes,
+  uploadImage,
 } from '../controllers/recipeController.js';
 import { authorization } from '../middlewares/auth.js';
+// import { uploadImageMiddleware } from '../middlewares/uploadImage.js';
+
+// Configure multer to use memory storage
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 const router = express.Router();
 
-// Create a new recipe
-router.post('',authorization, createRecipe);
+// Route to handle file upload (requires authorization)
+router.post("/uploadImage", authorization, upload.single('file'), uploadImage);
+
+// Create a new recipe with an image
+router.post('', authorization, createRecipe);
 
 // Get all recipes
 router.get('',authorization, getAllRecipes);

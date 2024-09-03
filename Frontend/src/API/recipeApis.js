@@ -1,38 +1,76 @@
-import axios from 'axios';
+import axios from "axios";
 
 // Base API URL
 const API_URL = `${import.meta.env.VITE_API}/recipes`;
 
+// Image Upload Function will get URL
+async function uploadImage(token, selectedFile) {
+  try {
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    
+    // console.log(contentType, filename);
+    const response = await axios.post(
+      `${API_URL}/uploadImage`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data', // Set this to multipart/form-data
+        },
+      }
+    );
+    return response.data.url;
+  } catch (err) {
+    throw new Error(
+      err?.response?.data?.message ||
+        `Something went wrong! Please try again later.`
+    );
+  }
+}
 // Function to create a new recipe
 export async function createRecipe(data) {
   try {
-    const response = await axios.post(API_URL, data, {
+    const token = localStorage.getItem('token')
+    const {
+      image,
+      ...rest
+    } = data;
+
+    // console.log(rest.instructions);
+
+    const imageUrl = await uploadImage(token, image)
+
+    rest.imageUrl = imageUrl;
+
+    const response = await axios.post(API_URL, rest, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Pass the token
+        'Authorization': `Bearer ${token}`, // Pass the token
       },
     });
+
     return response.data;
   } catch (err) {
     throw new Error(
       err?.response?.data?.message ||
-      'Something went wrong while creating the recipe. Please try again later.'
+        "Something went wrong while creating the recipe. Please try again later."
     );
   }
 }
 
 // Function to get all recipes
-export async function getRecipes() {
+export async function getRecipes() {  
   try {
     const response = await axios.get(API_URL, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Pass the token
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // Pass the token
       },
     });
     return response.data;
   } catch (err) {
     throw new Error(
       err?.response?.data?.message ||
-      'Something went wrong while fetching recipes. Please try again later.'
+        "Something went wrong while fetching recipes. Please try again later."
     );
   }
 }
@@ -42,49 +80,49 @@ export async function getRecipeById(id) {
   try {
     const response = await axios.get(`${API_URL}/${id}`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Pass the token
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // Pass the token
       },
     });
     return response.data;
   } catch (err) {
     throw new Error(
       err?.response?.data?.message ||
-      `Something went wrong while fetching the recipe. Please try again later.`
+        `Something went wrong while fetching the recipe. Please try again later.`
     );
   }
 }
 
 // Function to browse and search recipes with filters
 export async function browseAndSearchRecipes(filters) {
-    try {
-      const response = await axios.get(`${API_URL}/search`, {
-        params: filters, // Pass the filters as query parameters
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`, // Pass the token
-        },
-      });
-      return response.data;
-    } catch (err) {
-      throw new Error(
-        err?.response?.data?.message ||
-        'Something went wrong while fetching recipes. Please try again later.'
-      );
-    }
-  }
-
-// Function to update a recipe by ID
-export async function updateRecipe(id, data) {
   try {
-    const response = await axios.put(`${API_URL}/${id}`, data, {
+    const response = await axios.get(`${API_URL}/search`, {
+      params: filters, // Pass the filters as query parameters
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Pass the token
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // Pass the token
       },
     });
     return response.data;
   } catch (err) {
     throw new Error(
       err?.response?.data?.message ||
-      'Something went wrong while updating the recipe. Please try again later.'
+        "Something went wrong while fetching recipes. Please try again later."
+    );
+  }
+}
+
+// Function to update a recipe by ID
+export async function updateRecipe(id, data) {
+  try {
+    const response = await axios.put(`${API_URL}/${id}`, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // Pass the token
+      },
+    });
+    return response.data;
+  } catch (err) {
+    throw new Error(
+      err?.response?.data?.message ||
+        "Something went wrong while updating the recipe. Please try again later."
     );
   }
 }
@@ -94,14 +132,14 @@ export async function deleteRecipe(id) {
   try {
     const response = await axios.delete(`${API_URL}/${id}`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Pass the token
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // Pass the token
       },
     });
     return response.data;
   } catch (err) {
     throw new Error(
       err?.response?.data?.message ||
-      'Something went wrong while deleting the recipe. Please try again later.'
+        "Something went wrong while deleting the recipe. Please try again later."
     );
   }
 }

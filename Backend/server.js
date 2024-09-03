@@ -13,7 +13,6 @@ import followerRouters from './routers/followerRouters.js';
 // associations
 import setupAssociations from "./models/associations.js"
 
-
 const app = express();
 
 app.use(
@@ -39,7 +38,7 @@ app.use("/followers", followerRouters)
 async function initializeDatabase() {
   console.log("Database connection has been established successfully.");
   await sequelize.sync({ force: false });
-//   await sequelize.sync({ force: true });
+  // await sequelize.sync({ force: true });
 }
 
 setupAssociations()
