@@ -1,6 +1,8 @@
 import { Op } from "sequelize";
-import Recipe from "../models/Recipe.js";
 import AWSService from "../services/awsService.js";
+import Recipe from "../models/Recipe.js";
+import User from '../models/User.js';
+import Follower from '../models/Follower.js';
 
 export const createRecipe = async (req, res) => {
   try {
@@ -71,11 +73,16 @@ export const uploadImage = async (req, res) => {
   }
 };
 
-// Get all recipes
 export const getAllRecipes = async (req, res) => {
   try {
-    const recipes = await Recipe.findAll();
-    // console.log(recipes);
+    const recipes = await Recipe.findAll({
+      include: {
+        model: User,
+        attributes: ['name'],
+      }
+    });
+
+
     res.status(200).json(recipes);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -85,15 +92,42 @@ export const getAllRecipes = async (req, res) => {
 // Get a single recipe by ID
 export const getRecipeById = async (req, res) => {
   try {
-    const recipe = await Recipe.findByPk(req.params.id);
+    const userId = req.user.id; // Current user ID
+
+    // Fetch the recipe along with the associated user
+    const recipe = await Recipe.findByPk(req.params.id, {
+      include: {
+        model: User,
+        attributes: ['id', 'name'],
+      }
+    });
 
     if (!recipe) return res.status(404).json({ message: "Recipe not found" });
 
-    res.status(200).json(recipe);
+    let isFollowing = null;
+
+    // Check if the current user is following the user associated with the recipe, only if they are different users
+    if (recipe.userId !== userId) {
+      const followingRecord = await Follower.findOne({
+        where: {
+          followingId: recipe.userId,
+          followerId: userId
+        }
+      });
+      isFollowing = !!followingRecord; // Convert result to boolean
+    }
+
+    const responseData = {
+      ...recipe.toJSON(),
+      isFollowing // Include the following status in the response
+    };
+
+    res.status(200).json(responseData);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // Update a recipe
 export const updateRecipe = async (req, res) => {

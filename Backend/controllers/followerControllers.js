@@ -5,7 +5,7 @@ import User from '../models/User.js';
 export const followUser = async (req, res) => {
   try {
     const { followingId } = req.body;
-    const followerId = req.user.id; // Assuming `req.user` contains the authenticated user's ID
+    const followerId = req.user.id;
 
     if (followerId === followingId) {
       return res.status(400).json({ message: "You cannot follow yourself" });
