@@ -82,7 +82,6 @@ export const getAllRecipes = async (req, res) => {
       }
     });
 
-
     res.status(200).json(recipes);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -127,7 +126,6 @@ export const getRecipeById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 // Update a recipe
 export const updateRecipe = async (req, res) => {

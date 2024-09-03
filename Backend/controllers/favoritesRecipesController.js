@@ -12,7 +12,6 @@ export const addRecipeToFavorites = async (req, res) => {
     if (!recipe) {
       return res.status(404).json({ message: "Recipe not found" });
     }
-
     const newFavorite = await FavoritesRecipes.create({
       containerId,
       recipeId,
@@ -28,17 +27,30 @@ export const addRecipeToFavorites = async (req, res) => {
 export const getRecipesFromContainer = async (req, res) => {
   try {
     const { containerId } = req.params;
-
     const recipes = await FavoritesRecipes.findAll({
       where: { containerId },
-      include: [Recipe], // Include the recipe details
+      include: [
+        {
+          model: Recipe,
+          attributes: ['id', 'title'], // Only include the id and name of the recipes
+        },
+      ],
     });
 
-    res.status(200).json(recipes);
+    // Map the response to only return the recipe id and name
+    const simplifiedRecipes = recipes.map((recipe) => {
+      return {
+        id: recipe.Recipe.id,
+        name: recipe.Recipe.title,
+      };
+    });
+
+    res.status(200).json(simplifiedRecipes);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // Remove a recipe from a favorites container
 export const removeRecipeFromFavorites = async (req, res) => {

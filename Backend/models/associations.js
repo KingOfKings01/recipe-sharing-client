@@ -19,6 +19,7 @@ export default function setupAssociations() {
   FavoritesContainer.hasMany(FavoritesRecipes, {
     foreignKey: "containerId",
     as: "recipes",
+    onDelete: "CASCADE", // Enable cascading delete
   });
   FavoritesRecipes.belongsTo(FavoritesContainer, { foreignKey: "containerId" });
 

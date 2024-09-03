@@ -1,28 +1,30 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getRecipeById } from '../API/recipeApis'; // Your API function
-import { followUser, unfollowUser } from '../API/followApi'; // Import follow/unfollow functions
-import FeedbackAndRatingForm from '../components/FeedbackAndRatingForm'; // Import the new component
-import { getReviewsByRecipe } from '../API/ratingReviewApis'; // Import the API function for reviews
+import { getRecipeById } from '../API/recipeApis';
+import { followUser, unfollowUser } from '../API/followApi';
+import FeedbackAndRatingForm from '../components/FeedbackAndRatingForm';
+import { getReviewsByRecipe } from '../API/ratingReviewApis';
+import PopupBox from '../components/PopupBox'; // Import the PopupBox component
 
 function RecipeDetails() {
-    const { id } = useParams(); // Get the recipe ID from URL params
+    const { id } = useParams();
     const [recipe, setRecipe] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isFollowing, setIsFollowing] = useState(false); // State for follow status
-    const [loadingFollow, setLoadingFollow] = useState(false); // State for follow/unfollow action
-    const [reviews, setReviews] = useState([]); // State for storing reviews
-    const [loadingReviews, setLoadingReviews] = useState(true); // State for loading reviews
-    const [reviewError, setReviewError] = useState(null); // State for review errors
+    const [isFollowing, setIsFollowing] = useState(false);
+    const [loadingFollow, setLoadingFollow] = useState(false);
+    const [reviews, setReviews] = useState([]);
+    const [loadingReviews, setLoadingReviews] = useState(true);
+    const [reviewError, setReviewError] = useState(null);
     const [showFeedbackForm, setShowFeedbackForm] = useState(true);
+    const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
 
     useEffect(() => {
         const fetchRecipe = async () => {
             try {
-                const data = await getRecipeById(id); // Fetch recipe by ID
+                const data = await getRecipeById(id);
                 setRecipe(data);
-                setIsFollowing(data.isFollowing); // Set the initial follow status
+                setIsFollowing(data.isFollowing);
                 setLoading(false);
             } catch (err) {
                 setError(err.message);
@@ -36,9 +38,8 @@ function RecipeDetails() {
     useEffect(() => {
         const fetchReviews = async () => {
             try {
-                const { reviews, hasUserFeedback } = await getReviewsByRecipe(id); // Fetch reviews by recipe ID
+                const { reviews, hasUserFeedback } = await getReviewsByRecipe(id);
                 setReviews(reviews);
-                console.log(reviews);
                 setShowFeedbackForm(!hasUserFeedback);
                 setLoadingReviews(false);
             } catch (err) {
@@ -51,15 +52,15 @@ function RecipeDetails() {
     }, [id]);
 
     const handleFollowToggle = async () => {
-        if (loadingFollow) return; // Prevent multiple clicks
+        if (loadingFollow) return;
         setLoadingFollow(true);
 
         try {
             if (isFollowing) {
-                await unfollowUser(recipe.User.id); // Unfollow user
+                await unfollowUser(recipe.User.id);
                 setIsFollowing(false);
             } else {
-                await followUser(recipe.User.id); // Follow user
+                await followUser(recipe.User.id);
                 setIsFollowing(true);
             }
         } catch (err) {
@@ -79,6 +80,13 @@ function RecipeDetails() {
             <img src={recipe.imageUrl} alt={recipe.title} style={{ width: "100%" }} />
             <h3>Total: {recipe.numberOfFeedbacks || "No feedbacks yet!"}</h3>
             <h3>Ratings: {recipe.averageRating || "No ratings yet!"}</h3>
+            
+            {/* Button to show popup */}
+            <button onClick={() => setShowPopup(true)}>Manage Favorites</button>
+
+            {/* Render the PopupBox component */}
+            {showPopup && <PopupBox recipeId={id} onClose={() => setShowPopup(false)} />}
+
             <h2>Ingredients</h2>
             <pre>{recipe.ingredients}</pre>
             <h2>Instructions</h2>
@@ -100,8 +108,8 @@ function RecipeDetails() {
             {/* Feedback and Rating Form */}
             {showFeedbackForm && <FeedbackAndRatingForm
                 recipeId={id}
-                initialFeedback="" // Optionally, pass initial feedback
-                initialRating={0}   // Optionally, pass initial rating
+                initialFeedback=""
+                initialRating={0}
             />}
 
             {/* Reviews Section */}

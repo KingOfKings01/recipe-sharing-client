@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
 import FormComponent from '../components/FormComponent';
-import { login } from '../API/userApis';
+import { login } from '../API/authApis';
 import { useState } from 'react';
 
 function LogIn() {
