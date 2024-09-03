@@ -1,7 +1,5 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js';
-import User from './User.js';
-import Recipe from './Recipe.js';
 
 const RatingReview = sequelize.define('RatingReview', {
   id: {

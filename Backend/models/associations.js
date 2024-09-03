@@ -26,7 +26,7 @@ export default function setupAssociations() {
   Recipe.hasMany(FavoritesRecipes, { foreignKey: "recipeId", as: "favorites" });
   FavoritesRecipes.belongsTo(Recipe, { foreignKey: "recipeId" });
 
-  // Associations
+  // User and recipe has many Ratings and Reviews Many to Many Relations
   User.hasMany(RatingReview, { foreignKey: "userId" });
   RatingReview.belongsTo(User, { foreignKey: "userId" });
 
