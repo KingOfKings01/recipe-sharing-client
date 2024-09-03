@@ -27,11 +27,11 @@ router.post('', authorization, createRecipe);
 // Get all recipes
 router.get('',authorization, getAllRecipes);
 
-// Get a single recipe by ID
-router.get('/:id',authorization, getRecipeById);
-
 // Search for recipes by name or ingredient, etc.
 router.get('/search',authorization, browseAndSearchRecipes);
+
+// Get a single recipe by ID
+router.get('/:id',authorization, getRecipeById);
 
 // Update a recipe
 router.put('/:id',authorization, updateRecipe);

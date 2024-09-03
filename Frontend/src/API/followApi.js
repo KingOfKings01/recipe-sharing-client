@@ -38,9 +38,9 @@ export async function unfollowUser(followingId) {
 }
 
 // Get followers of a user
-export async function getFollowers(userId) {
+export async function getFollowers() {
   try {
-    const response = await axios.get(`${API_URL}/${userId}/followers`, {
+    const response = await axios.get(`${API_URL}`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`, // Pass the token
       },
@@ -55,9 +55,9 @@ export async function getFollowers(userId) {
 }
 
 // Get users a user is following
-export async function getFollowing(userId) {
+export async function getFollowing() {
   try {
-    const response = await axios.get(`${API_URL}/${userId}/following`, {
+    const response = await axios.get(`${API_URL}/following`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`, // Pass the token
       },

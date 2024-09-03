@@ -6,30 +6,40 @@ import {
   getRecipesFromContainer
 } from '../API/favoritesApi';
 
+import { getFollowers, getFollowing, unfollowUser } from '../API/followApi';
+
 export default function Profile() {
   const [containers, setContainers] = useState([]);
   const [selectedContainer, setSelectedContainer] = useState(null);
   const [recipes, setRecipes] = useState([]);
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
 
   useEffect(() => {
-    // Fetch the favorite containers when the component mounts
-    async function fetchContainers() {
+    // Fetch favorite containers, followers, and following when the component mounts
+    async function fetchData() {
       try {
-        const data = await getContainers();
-        setContainers(data);
+        const containersData = await getContainers();
+        setContainers(containersData);
+
+        const followersData = await getFollowers();
+        setFollowers(followersData);
+
+        const followingData = await getFollowing();
+        setFollowing(followingData);
       } catch (error) {
         console.error(error.message);
       }
     }
-    fetchContainers();
+    fetchData();
   }, []);
 
   const handleDeleteContainer = async (containerId) => {
     try {
       await deleteContainer(containerId);
       // Refresh the containers list
-      const data = await getContainers();
-      setContainers(data);
+      const containersData = await getContainers();
+      setContainers(containersData);
       setSelectedContainer(null); // Deselect container if it was deleted
       setRecipes([]); // Clear recipes if container was deleted
     } catch (error) {
@@ -41,7 +51,6 @@ export default function Profile() {
     setSelectedContainer(containerId);
     try {
       const data = await getRecipesFromContainer(containerId);
-
       setRecipes(data);
     } catch (error) {
       console.error(error.message);
@@ -51,14 +60,23 @@ export default function Profile() {
   const handleRemoveRecipe = async (recipeId) => {
     if (!selectedContainer) return;
     try {
-      console.log(selectedContainer)
-      
       await removeRecipeFromFavorites(selectedContainer, recipeId);
-      alert("Recipe removed successfully")
+      alert("Recipe removed successfully");
       // Refresh the recipes list
       const data = await getRecipesFromContainer(selectedContainer);
-      console.log(data);
       setRecipes(data);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  const handleUnfollowUser = async (userId) => {
+    try {
+      await unfollowUser(userId);
+      alert("User unfollowed successfully")
+      // Refresh the following list
+      const followingData = await getFollowing();
+      setFollowing(followingData);
     } catch (error) {
       console.error(error.message);
     }
@@ -67,6 +85,7 @@ export default function Profile() {
   return (
     <div>
       <h1>Profile</h1>
+
       <div>
         <h2>Favorites Containers</h2>
         <ul>
@@ -79,21 +98,43 @@ export default function Profile() {
           ))}
         </ul>
       </div>
+
       {selectedContainer && (
         <div>
           <h2>Recipes in Container</h2>
           <ul>
-            {recipes.map((recipe,index) => (
-              <>
-              
-              <li key={index}><span> {recipe.name} </span> <button onClick={() => handleRemoveRecipe(recipe.id)}>Remove</button></li> 
-              </>
+            {recipes.map((recipe, index) => (
+              <li key={index}>
+                <span>{recipe.name}</span> 
+                <button onClick={() => handleRemoveRecipe(recipe.id)}>Remove</button>
+              </li>
             ))}
           </ul>
-         
-          
         </div>
       )}
+
+      <div>
+        <h2>Followers</h2>
+        <ul>
+          {followers.map((follower, index) => (
+            <li key={index}>
+              {follower.name}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h2>Following</h2>
+        <ul>
+          {following.map((user, index) => (
+            <li key={index}>
+              {user.name}
+              <button onClick={() => handleUnfollowUser(user.id)}>Unfollow</button>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

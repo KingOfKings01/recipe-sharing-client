@@ -157,6 +157,7 @@ export const deleteRecipe = async (req, res) => {
 };
 
 // Browse and Search Recipes with Filters
+
 export const browseAndSearchRecipes = async (req, res) => {
   try {
     const {
@@ -177,12 +178,6 @@ export const browseAndSearchRecipes = async (req, res) => {
       filters.difficultyLevel = difficultyLevel;
     }
 
-    if (maxPreparationTime) {
-      filters.preparationTime = {
-        [Op.lte]: parseInt(maxPreparationTime, 10), // Less than or equal to maxPreparationTime
-      };
-    }
-
     if (searchTerm) {
       filters.title = {
         [Op.like]: `%${searchTerm}%`, // Search for the term in the title
@@ -194,10 +189,18 @@ export const browseAndSearchRecipes = async (req, res) => {
       where: filters,
     });
 
-    res.status(200).json(recipes);
+    // Custom filtering for preparationTime
+    const filteredRecipes = recipes.filter(recipe => {
+      if (maxPreparationTime) {
+        const preparationTimeStr = recipe.preparationTime; // e.g., '10-15 mins'
+        const [minTime] = preparationTimeStr.split('-').map(time => parseInt(time, 10));
+        return minTime <= parseInt(maxPreparationTime, 10);
+      }
+      return true; // If no maxPreparationTime is specified, return all recipes
+    });
+
+    res.status(200).json(filteredRecipes);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching recipes", error: error.message });
+    res.status(500).json({ message: "Error fetching recipes", error: error.message });
   }
 };

@@ -33,45 +33,68 @@ export const unfollowUser = async (req, res) => {
     const { followingId } = req.body;
     const followerId = req.user.id;
 
+    // Ensure the followingId is provided
+    if (!followingId) {
+      return res.status(400).json({ message: "followingId is required to unfollow a user" });
+    }
+
+    // Check if the relationship exists before attempting to delete
+    const followRecord = await Follower.findOne({ where: { followerId, followingId } });
+
+    if (!followRecord) {
+      return res.status(404).json({ message: "Follow relationship not found" });
+    }
+
+    // If the relationship exists, delete it
     await Follower.destroy({ where: { followerId, followingId } });
+    
     res.status(200).json({ message: "Successfully unfollowed the user" });
   } catch (error) {
     res.status(500).json({ message: "Error unfollowing user", error: error.message });
   }
 };
 
+
 // Get followers of a user
 export const getFollowers = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user.id;
 
-    const followers = await Follower.findAll({
-      where: { followingId: userId },
-      include: {
+    // Fetch the users who are following the current user
+    const followers = await User.findAll({
+      include: [{
         model: User,
-        as: 'Followers',
+        as: 'Following',
+        through: {
+          attributes: [], // Don't include junction table data in the response
+          where: { followingId: userId },
+        },
         attributes: ['id', 'name', 'email'],
-      },
+      }],
     });
 
     res.status(200).json(followers);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching followers", error: error.message });
+    console.error(error.message);
+    res.status(500).json({ message: "Error fetching followers" });
   }
 };
+
 
 // Get users a user is following
 export const getFollowing = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user.id;
 
-    const following = await Follower.findAll({
-      where: { followerId: userId },
-      include: {
+    const following = await User.findAll({
+      include: [{
         model: User,
         as: 'Following',
+        through: {
+          where: { followerId: userId },
+        },
         attributes: ['id', 'name', 'email'],
-      },
+      }],
     });
 
     res.status(200).json(following);
