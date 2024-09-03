@@ -15,3 +15,20 @@ export const getUserDetails = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+export const getUserRecipes = async (req, res) => {
+  try {
+    const userId = req.user.id; // Assuming you have the user ID from authentication middleware
+
+    // Fetch all recipes created by the specific user
+    const recipes = await Recipe.findAll({
+      where: {
+        userId: userId, // Filter recipes by the userId
+      },
+    });
+
+    res.status(200).json(recipes);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

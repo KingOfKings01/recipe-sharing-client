@@ -3,7 +3,7 @@ import SignIn from './pages/SignIn';
 import LogIn from './pages/LogIn';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
-import RecipeForm from './pages/RecipeFrom';
+// import RecipeForm from './pages/RecipeFrom';
 import RecipeDetails from './pages/RecipeDetails';
 
 function App() {
@@ -12,7 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />  {/* Default route */}  
         <Route path="/profile" element={<Profile />} />
-        <Route path="/recipe-form" element={<RecipeForm />} />
+        {/* <Route path="/recipe-form" element={<RecipeForm />} /> */}
         <Route path="/recipe/:id" element={<RecipeDetails />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/login" element={<LogIn />} />

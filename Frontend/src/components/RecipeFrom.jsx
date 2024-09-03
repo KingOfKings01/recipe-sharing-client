@@ -3,15 +3,15 @@ import { createRecipe, updateRecipe } from '../API/recipeApis'; // Import your A
 import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
 
-function RecipeForm({ recipeId }) {
-
+function RecipeForm({ isEdit, preInitialValues }) {
     const navigate = useNavigate();
+    
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token) {
             return navigate("/login");
         }
-    }, [])
+    }, []);
 
     const initialValues = {
         title: '',
@@ -24,22 +24,10 @@ function RecipeForm({ recipeId }) {
         categories: '',
         preparationTime: '',
         difficultyLevel: '',
+        ...preInitialValues // Use preInitialValues if provided
     };
     
     const [formData, setFormData] = useState(initialValues);
-
-    // Fetch recipe data for update if recipeId is provided
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            return navigate("/login");
-        }
-        
-        if (recipeId) {
-            // for updateRecipe
-            console.log(recipeId);
-        }
-    }, [recipeId]);
 
     const handleChange = (e) => {
         setFormData({
@@ -59,17 +47,17 @@ function RecipeForm({ recipeId }) {
         e.preventDefault();
         try {
             // Determine if it's an update or create operation
-            const apiCall = recipeId ? updateRecipe : createRecipe;
+            const apiCall = isEdit ? updateRecipe : createRecipe;
             const data = { ...formData };
-
-            if (recipeId) {
-                await apiCall(recipeId, data); // Pass `recipeId` for updates
+            
+            if (isEdit) {
+                await apiCall(preInitialValues.id, data); // Pass `id` for updates
             } else {
                 await apiCall(data);
             }
 
             setFormData(initialValues);
-            alert(recipeId ? 'Recipe updated successfully!' : 'Recipe created successfully!');
+            alert(isEdit ? 'Recipe updated successfully!' : 'Recipe created successfully!');
         } catch (err) {
             console.error(err);
             alert(err.message);
@@ -98,7 +86,7 @@ function RecipeForm({ recipeId }) {
                         type="file"
                         name="imageUrl"
                         onChange={handleFileChange}
-                        required={!recipeId} // Make required only if creating
+                        required={!isEdit} // Make required only if creating
                     />
                 </label>
             </div>
@@ -224,13 +212,14 @@ function RecipeForm({ recipeId }) {
                 </label>
             </div>
 
-            <button type="submit">{recipeId ? 'Update Recipe' : 'Create Recipe'}</button>
+            <button type="submit">{isEdit ? 'Update Recipe' : 'Create Recipe'}</button>
         </form>
     );
 }
 
 RecipeForm.propTypes = {
-    recipeId: PropTypes.string,
+    isEdit: PropTypes.bool,
+    preInitialValues: PropTypes.object
 }
 
 export default RecipeForm;

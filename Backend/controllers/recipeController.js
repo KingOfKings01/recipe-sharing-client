@@ -54,6 +54,8 @@ export const uploadImage = async (req, res) => {
     const userId = req.user.id;
 
     // Ensure file is present in req.file
+
+
     if (!req.file) {
       return res.status(404).json({ message: "No file uploaded." });
     }
@@ -127,16 +129,36 @@ export const getRecipeById = async (req, res) => {
   }
 };
 
+
+export const getUserRecipes = async (req, res) => {
+  try {
+    const userId = req.user.id; // Assuming you have the user ID from authentication middleware
+
+    // Fetch all recipes created by the specific user
+    const recipes = await Recipe.findAll({
+      where: {
+        userId: userId, // Filter recipes by the userId
+      },
+    });
+
+    res.status(200).json(recipes);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Update a recipe
 export const updateRecipe = async (req, res) => {
   try {
     const [updated] = await Recipe.update(req.body, {
       where: { id: req.params.id },
     });
+
     if (!updated) return res.status(404).json({ message: "Recipe not found" });
 
     res.status(200).json({ message: "Recipe updated" });
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({ message: error.message });
   }
 };
@@ -157,7 +179,6 @@ export const deleteRecipe = async (req, res) => {
 };
 
 // Browse and Search Recipes with Filters
-
 export const browseAndSearchRecipes = async (req, res) => {
   try {
     const {

@@ -9,7 +9,8 @@ async function uploadImage(token, selectedFile) {
     const formData = new FormData();
     formData.append("file", selectedFile);
     
-    // console.log(contentType, filename);
+    console.log(selectedFile);
+
     const response = await axios.post(
       `${API_URL}/uploadImage`,
       formData,
@@ -33,15 +34,13 @@ export async function createRecipe(data) {
   try {
     const token = localStorage.getItem('token')
     const {
-      image,
+      imageUrl,
       ...rest
     } = data;
 
-    // console.log(rest.instructions);
+    const AWSimageUrl = await uploadImage(token, imageUrl)
 
-    const imageUrl = await uploadImage(token, image)
-
-    rest.imageUrl = imageUrl;
+    rest.imageUrl = AWSimageUrl;
 
     const response = await axios.post(API_URL, rest, {
       headers: {
@@ -106,6 +105,22 @@ export async function browseAndSearchRecipes(filters) {
     throw new Error(
       err?.response?.data?.message ||
         "Something went wrong while fetching recipes. Please try again later."
+    );
+  }
+}
+
+export async function getRecipesOfUser(){
+  try {
+    const response = await axios.get(`${API_URL}/user`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // Pass the token
+      },
+    });
+    return response.data;
+  } catch (err) {
+    throw new Error(
+      err?.response?.data?.message ||
+        "Something went wrong while fetching user's recipes. Please try again later."
     );
   }
 }

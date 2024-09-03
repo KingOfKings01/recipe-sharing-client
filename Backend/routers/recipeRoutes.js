@@ -4,6 +4,7 @@ import {
   createRecipe,
   getAllRecipes,
   getRecipeById,
+  getUserRecipes,
   updateRecipe,
   deleteRecipe,
   browseAndSearchRecipes,
@@ -26,6 +27,8 @@ router.post('', authorization, createRecipe);
 
 // Get all recipes
 router.get('',authorization, getAllRecipes);
+
+router.get('/user',authorization, getUserRecipes);
 
 // Search for recipes by name or ingredient, etc.
 router.get('/search',authorization, browseAndSearchRecipes);
