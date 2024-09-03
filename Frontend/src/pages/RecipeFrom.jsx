@@ -1,22 +1,46 @@
-import { createRecipe } from '../API/recipeApis'; // Your API file
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createRecipe, updateRecipe } from '../API/recipeApis'; // Import your API functions
+import PropTypes from 'prop-types';
+import { useNavigate } from "react-router-dom";
 
-function RecipeForm() {
-const values = {
-    title: '',
-    image: null,
-    ingredients: '',
-    instructions: '',
-    dietaryPreference: '',
-    cookingTime: '',
-    servings: '',
-    categories: '',
-    preparationTime: '',
-    difficultyLevel: '',
-}
-    const [formData, setFormData] = useState(values);
+function RecipeForm({ recipeId }) {
 
-    // Handle change for text fields
+    const navigate = useNavigate();
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            return navigate("/login");
+        }
+    }, [])
+
+    const initialValues = {
+        title: '',
+        imageUrl: '',
+        ingredients: '',
+        instructions: '',
+        dietaryPreference: '',
+        cookingTime: '',
+        servings: '',
+        categories: '',
+        preparationTime: '',
+        difficultyLevel: '',
+    };
+    
+    const [formData, setFormData] = useState(initialValues);
+
+    // Fetch recipe data for update if recipeId is provided
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            return navigate("/login");
+        }
+        
+        if (recipeId) {
+            // for updateRecipe
+            console.log(recipeId);
+        }
+    }, [recipeId]);
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -24,25 +48,28 @@ const values = {
         });
     };
 
-    // Handle change for file input
     const handleFileChange = (e) => {
         setFormData({
             ...formData,
-            image: e.target.files[0],
+            imageUrl: e.target.files[0], // Changed from `image` to `imageUrl` to match the model
         });
     };
 
-    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Call API with form data
+            // Determine if it's an update or create operation
+            const apiCall = recipeId ? updateRecipe : createRecipe;
             const data = { ...formData };
-            const response = await createRecipe(data);
 
-            setFormData(values)
+            if (recipeId) {
+                await apiCall(recipeId, data); // Pass `recipeId` for updates
+            } else {
+                await apiCall(data);
+            }
 
-            alert('Recipe created successfully!');
+            setFormData(initialValues);
+            alert(recipeId ? 'Recipe updated successfully!' : 'Recipe created successfully!');
         } catch (err) {
             console.error(err);
             alert(err.message);
@@ -69,9 +96,9 @@ const values = {
                     Image:
                     <input
                         type="file"
-                        name="image"
+                        name="imageUrl"
                         onChange={handleFileChange}
-                        required
+                        required={!recipeId} // Make required only if creating
                     />
                 </label>
             </div>
@@ -197,9 +224,13 @@ const values = {
                 </label>
             </div>
 
-            <button type="submit">Create Recipe</button>
+            <button type="submit">{recipeId ? 'Update Recipe' : 'Create Recipe'}</button>
         </form>
     );
+}
+
+RecipeForm.propTypes = {
+    recipeId: PropTypes.string,
 }
 
 export default RecipeForm;
