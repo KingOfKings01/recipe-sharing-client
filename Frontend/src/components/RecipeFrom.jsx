@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 function RecipeForm({ isEdit, preInitialValues }) {
     const navigate = useNavigate();
-    
+
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -26,8 +26,9 @@ function RecipeForm({ isEdit, preInitialValues }) {
         difficultyLevel: '',
         ...preInitialValues // Use preInitialValues if provided
     };
-    
+
     const [formData, setFormData] = useState(initialValues);
+    const [imagePreview, setImagePreview] = useState(null);
 
     const handleChange = (e) => {
         setFormData({
@@ -37,10 +38,18 @@ function RecipeForm({ isEdit, preInitialValues }) {
     };
 
     const handleFileChange = (e) => {
+        const file = e.target.files[0];
         setFormData({
             ...formData,
-            imageUrl: e.target.files[0], // Changed from `image` to `imageUrl` to match the model
+            imageUrl: file,
         });
+
+        // Create a file reader to generate a preview
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImagePreview(reader.result);
+        };
+        reader.readAsDataURL(file); // Read the file as a data URL
     };
 
     const handleSubmit = async (e) => {
@@ -49,7 +58,7 @@ function RecipeForm({ isEdit, preInitialValues }) {
             // Determine if it's an update or create operation
             const apiCall = isEdit ? updateRecipe : createRecipe;
             const data = { ...formData };
-            
+
             if (isEdit) {
                 await apiCall(preInitialValues.id, data); // Pass `id` for updates
             } else {
@@ -65,7 +74,7 @@ function RecipeForm({ isEdit, preInitialValues }) {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="recipe-form-container">
             <div>
                 <label>
                     Title:
@@ -82,6 +91,18 @@ function RecipeForm({ isEdit, preInitialValues }) {
             <div>
                 <label>
                     Image:
+                    {formData.imageUrl && !imagePreview &&
+                        <div className="image-preview-container">
+                            <img src={formData.imageUrl} alt="Selected" className="image-preview" />
+                        </div>
+                    }
+
+                    {imagePreview && (
+                        <div className="image-preview-container">
+                            <img src={imagePreview} alt="Selected" className="image-preview" />
+                        </div>
+                    )}
+
                     <input
                         type="file"
                         name="imageUrl"

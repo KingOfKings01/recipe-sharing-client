@@ -27,9 +27,8 @@ export default function Home() {
   const handleSearch = async (filters) => {
     try {
       setLoading(true);
-
       console.log(filters);
-      
+
       const data = await browseAndSearchRecipes(filters); // Make API call with filters
       setRecipes(data);
       setLoading(false);
@@ -48,26 +47,45 @@ export default function Home() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div>
+    <div className='container'>
       <h1>Recipes</h1>
       <button onClick={() => setShowPopup(true)}>Search Recipes</button> {/* Button to open the search popup */}
-      
+
+      <input type="text" />
+      <button>Search</button>
+
       {showPopup && <SearchPopup onSearch={handleSearch} onClose={handleClosePopup} />} {/* Show the search popup when button is clicked */}
-      
+
       {recipes?.length > 0 ? (
         <ul>
           {recipes.map((recipe) => (
             <li key={recipe.id}>
-              <Link to={`/recipe/${recipe.id}`}>
-                <h2>{recipe.title}</h2>
-                <img src={recipe.imageUrl} alt={recipe.title} style={{ width: '100px', height: '100px' }} />
-                <p><strong>Ingredients:</strong> {recipe.ingredients.split('\n').slice(0, 2).join(', ')}...</p>
-                <p><strong>Cooking Time:</strong> {recipe.cookingTime}</p>
-                <p><strong>Servings:</strong> {recipe.servings}</p>
-                <p><strong>Ratings:</strong> {recipe?.averageRating}</p>
-                <p><strong>Difficulty Level:</strong> {recipe.difficultyLevel}</p>
-                <p>Posted by: {recipe.User.name}</p>
-              </Link>
+
+              <div className='recipe-box'>
+
+                <Link to={`/recipe/${recipe.id}`}>
+                  <img
+                    src={recipe.imageUrl}
+                    alt={recipe.title}
+                    className='food-image'
+                    onError={(e) => {
+                      e.target.onerror = null; // Prevents looping
+                      e.target.src = "../../public/Food.svg";
+                    }}
+                  />
+                </Link>
+                <div className='instruction'>
+                  <h2>{recipe.title}</h2>
+                  <p><strong>Cooking Time:</strong> {recipe.cookingTime}</p>
+                  <p><strong>Servings:</strong> {recipe.servings}</p>
+                  <p><strong>Ratings:</strong> {recipe?.averageRating}</p>
+                  <p><strong>Difficulty Level:</strong> {recipe.difficultyLevel}</p>
+                  <p><strong>Posted by:</strong> {recipe.User.name}</p>
+                </div>
+
+              </div>
+
+
             </li>
           ))}
         </ul>

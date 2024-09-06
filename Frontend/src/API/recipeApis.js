@@ -8,8 +8,6 @@ async function uploadImage(token, selectedFile) {
   try {
     const formData = new FormData();
     formData.append("file", selectedFile);
-    
-    console.log(selectedFile);
 
     const response = await axios.post(
       `${API_URL}/uploadImage`,
@@ -60,11 +58,7 @@ export async function createRecipe(data) {
 // Function to get all recipes
 export async function getRecipes() {  
   try {
-    const response = await axios.get(API_URL, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`, // Pass the token
-      },
-    });
+    const response = await axios.get(API_URL);
     return response.data;
   } catch (err) {
     throw new Error(

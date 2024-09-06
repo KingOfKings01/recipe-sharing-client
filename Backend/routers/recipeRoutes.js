@@ -26,20 +26,18 @@ router.post("/uploadImage", authorization, upload.single('file'), uploadImage);
 router.post('', authorization, createRecipe);
 
 // Get all recipes
-router.get('',authorization, getAllRecipes);
+router.get('', getAllRecipes);
+// Get a single recipe by ID
 
 router.get('/user',authorization, getUserRecipes);
-
-// Search for recipes by name or ingredient, etc.
-router.get('/search',authorization, browseAndSearchRecipes);
-
-// Get a single recipe by ID
-router.get('/:id',authorization, getRecipeById);
-
 // Update a recipe
 router.put('/:id',authorization, updateRecipe);
 
 // Delete a recipe
 router.delete('/:id',authorization, deleteRecipe);
+
+router.get('/:id',authorization, getRecipeById);
+// Search for recipes by name or ingredient, etc.
+router.get('/search', browseAndSearchRecipes);
 
 export default router;

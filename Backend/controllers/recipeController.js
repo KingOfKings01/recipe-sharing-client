@@ -134,6 +134,10 @@ export const getUserRecipes = async (req, res) => {
   try {
     const userId = req.user.id; // Assuming you have the user ID from authentication middleware
 
+    console.log(userId);
+    console.log(userId);
+    console.log(userId);
+
     // Fetch all recipes created by the specific user
     const recipes = await Recipe.findAll({
       where: {

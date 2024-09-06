@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getRecipeById } from '../API/recipeApis';
 import { followUser, unfollowUser } from '../API/followApi';
 import FeedbackAndRatingForm from '../components/FeedbackAndRatingForm';
@@ -7,6 +7,7 @@ import { getReviewsByRecipe } from '../API/ratingReviewApis';
 import PopupBox from '../components/PopupBox'; // Import the PopupBox component
 
 function RecipeDetails() {
+    const navigate = useNavigate();
     const { id } = useParams();
     const [recipe, setRecipe] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -20,6 +21,12 @@ function RecipeDetails() {
     const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
 
     useEffect(() => {
+        const token = localStorage.getItem('token')
+        if (!token) {
+            alert("Please login first!")
+            navigate('/login')
+        }
+
         const fetchRecipe = async () => {
             try {
                 const data = await getRecipeById(id);
