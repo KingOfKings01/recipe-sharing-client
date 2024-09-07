@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 export default function SearchPopup({ onSearch, onClose }) {
   const [dietaryPreference, setDietaryPreference] = useState('');
@@ -21,9 +21,9 @@ export default function SearchPopup({ onSearch, onClose }) {
     <div className="search-popup">
       <button className="close-button" onClick={onClose}>X</button> {/* Close button */}
       <form onSubmit={handleSubmit}>
-        <h2>Search Recipes</h2>
         
-        <div>
+        <h2>Search Recipes</h2>
+        <div className='filter-option'>
           <label>Dietary Preference:</label>
           <select
             value={dietaryPreference}
@@ -38,7 +38,7 @@ export default function SearchPopup({ onSearch, onClose }) {
           </select>
         </div>
 
-        <div>
+        <div className='filter-option'>
           <label>Difficulty Level:</label>
           <select
             value={difficultyLevel}
@@ -51,7 +51,7 @@ export default function SearchPopup({ onSearch, onClose }) {
           </select>
         </div>
 
-        <div>
+        <div className='filter-option'>
           <label>Max Preparation Time (minutes):</label>
           <input
             value={maxPreparationTime}
@@ -59,7 +59,7 @@ export default function SearchPopup({ onSearch, onClose }) {
           />
         </div>
 
-        <div>
+        <div className='filter-option'>
           <label>Search Term:</label>
           <input
             type="text"

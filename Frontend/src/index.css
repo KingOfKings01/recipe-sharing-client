@@ -1,4 +1,4 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -12,57 +12,58 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #8BC6EC;
+  background-color: #8bc6ec;
   /* background-image: linear-gradient(135deg, #8BC6EC 0%, #9599E2 100%); */
-  
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-a{
+a {
   text-decoration: none;
   color: #000;
 }
 
-#logo{
+#logo {
   width: 60px;
 }
 
-nav{
+nav {
   padding: 10px 2vw;
   background: #fff;
   color: #000;
-  
-  ul{
+
+  ul {
     display: flex;
     justify-content: space-between;
     width: 100%;
     align-items: center;
 
-    ls{
-      .title{
-        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    ls {
+      .title {
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+          sans-serif;
       }
     }
   }
-  a{
+  a {
     font-weight: 800;
     color: #333;
     transition: color 0.3s;
   }
 }
 
-.container{
+.container {
   padding: 10px 8vw;
 }
 
-li{
+li {
   list-style: none;
 }
 
-.btn-unfollow{
+.btn-unfollow {
   background: #ff0000;
   color: #fff;
   border: none;
@@ -70,12 +71,12 @@ li{
   margin: 0 5px;
   cursor: pointer;
   transition: background 0.3s;
-  &:hover{
+  &:hover {
     background: #dc3545;
   }
 }
 
-.recipe-box{
+.recipe-box {
   background: white;
   padding: 20px;
   display: flex;
@@ -84,16 +85,16 @@ li{
   gap: 20px;
   color: #000;
 
-  .food-image{
+  .food-image {
     width: 150px;
     height: 150px;
-    object-fit:cover;
+    object-fit: cover;
     max-width: 300px;
     margin-bottom: 20px;
     transform: translate(0%, 5%);
     border-radius: 5px;
   }
-  .information{
+  .information {
   }
 }
 
@@ -103,6 +104,7 @@ li{
   left: 0;
   width: 100%;
   height: 100%;
+  color: #000;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
@@ -115,6 +117,14 @@ li{
   border-radius: 8px;
   position: relative;
   width: 300px;
+
+  .list {
+    cursor: pointer;
+    margin: 10px 0;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    color: black;
+  }
 }
 
 .close-button {
@@ -127,6 +137,39 @@ li{
   cursor: pointer;
 }
 
+.list-form {
+  input {
+    width: 100%;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+
+  .options {
+    display: flex;
+    gap: 10px;
+
+    .cancel-btn {
+      background: #ccc;
+      color: #000;
+    }
+  }
+
+  button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+}
 
 /* Search box */
 

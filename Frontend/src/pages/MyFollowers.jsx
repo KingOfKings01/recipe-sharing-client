@@ -19,9 +19,9 @@ export default function MyFollowers() {
     return (
         <div className='container'>
             <h2>Followers</h2>
-            <table>
+            {followers.length ? <table>
                 <thead>
-                    <td>Followers</td>
+                    <td>Followers name</td>
                 </thead>
                 <tbody>
                     {followers.map((follower, index) => (
@@ -31,6 +31,9 @@ export default function MyFollowers() {
                     ))}
                 </tbody>
             </table>
+            :
+            <h3>There is no Followers.</h3>    
+        }
         </div>
     );
 }

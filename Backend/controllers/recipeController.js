@@ -188,7 +188,7 @@ export const browseAndSearchRecipes = async (req, res) => {
     const {
       dietaryPreference,
       difficultyLevel,
-      maxPreparationTime,
+      preparationTime,
       searchTerm,
     } = req.query;
 
@@ -209,22 +209,17 @@ export const browseAndSearchRecipes = async (req, res) => {
       };
     }
 
+
     // Fetch the recipes based on the filters
     const recipes = await Recipe.findAll({
       where: filters,
-    });
-
-    // Custom filtering for preparationTime
-    const filteredRecipes = recipes.filter(recipe => {
-      if (maxPreparationTime) {
-        const preparationTimeStr = recipe.preparationTime; // e.g., '10-15 mins'
-        const [minTime] = preparationTimeStr.split('-').map(time => parseInt(time, 10));
-        return minTime <= parseInt(maxPreparationTime, 10);
+      include: {
+        model: User,
+        attributes: ['name'],
       }
-      return true; // If no maxPreparationTime is specified, return all recipes
     });
 
-    res.status(200).json(filteredRecipes);
+    res.status(200).json(recipes);
   } catch (error) {
     res.status(500).json({ message: "Error fetching recipes", error: error.message });
   }

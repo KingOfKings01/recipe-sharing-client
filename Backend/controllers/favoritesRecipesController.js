@@ -8,7 +8,7 @@ export const addRecipeToFavorites = async (req, res) => {
     const userId = req.user.id;
 
     // Validate if the recipe belongs to the user
-    const recipe = await Recipe.findOne({ where: { id: recipeId, userId } });
+    const recipe = await Recipe.findOne({ where: { id: recipeId } });
     if (!recipe) {
       return res.status(404).json({ message: "Recipe not found" });
     }

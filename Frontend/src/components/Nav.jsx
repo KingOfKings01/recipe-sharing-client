@@ -40,7 +40,7 @@ export default function Nav() {
                     <Link to="/my-recipes">My Recipes</Link>
                     <Link to="/my-followers">My Followers</Link>
                     <Link to="/my-following">My Following</Link>
-                    <button onClick={handleLogout}>Log Out</button>
+                    <button className='logout-btn' onClick={handleLogout}>Log Out</button>
                   </div>
                 )}
               </div>

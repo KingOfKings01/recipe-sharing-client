@@ -5,8 +5,8 @@ import { authorization } from '../middlewares/auth.js';
 const router = express.Router();
 
 // Routes for managing favorites containers
-router.post('/create', authorization, createContainer); // Create a new container
 router.get('/', authorization, getContainers); // Get all containers
+router.post('/create', authorization, createContainer); // Create a new container
 router.delete('/:containerId', authorization, deleteContainer); // Delete a container
 
 export default router;

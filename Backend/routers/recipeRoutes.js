@@ -30,6 +30,10 @@ router.get('', getAllRecipes);
 // Get a single recipe by ID
 
 router.get('/user',authorization, getUserRecipes);
+// Search for recipes by name or ingredient, etc.
+router.get('/search', browseAndSearchRecipes);
+
+
 // Update a recipe
 router.put('/:id',authorization, updateRecipe);
 
@@ -37,7 +41,5 @@ router.put('/:id',authorization, updateRecipe);
 router.delete('/:id',authorization, deleteRecipe);
 
 router.get('/:id',authorization, getRecipeById);
-// Search for recipes by name or ingredient, etc.
-router.get('/search', browseAndSearchRecipes);
 
 export default router;

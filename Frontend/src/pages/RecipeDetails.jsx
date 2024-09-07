@@ -5,6 +5,8 @@ import { followUser, unfollowUser } from '../API/followApi';
 import FeedbackAndRatingForm from '../components/FeedbackAndRatingForm';
 import { getReviewsByRecipe } from '../API/ratingReviewApis';
 import PopupBox from '../components/PopupBox'; // Import the PopupBox component
+import { IoHeartOutline } from "react-icons/io5";
+import '../detail_page.css'
 
 function RecipeDetails() {
     const navigate = useNavigate();
@@ -82,28 +84,45 @@ function RecipeDetails() {
     if (!recipe) return <p>No recipe found</p>;
 
     return (
-        <div>
+        <div className='container'>
             <h1>{recipe.title}</h1>
-            <img src={recipe.imageUrl} alt={recipe.title} style={{ width: "100%" }} />
-            <h3>Total: {recipe.numberOfFeedbacks || "No feedbacks yet!"}</h3>
-            <h3>Ratings: {recipe.averageRating || "No ratings yet!"}</h3>
-            
-            {/* Button to show popup */}
-            <button onClick={() => setShowPopup(true)}>Manage Favorites</button>
+            <div className='card'>
+                <img
+                    src={recipe.imageUrl}
+                    alt={recipe.title}
+                    className='food-image'
+                    onError={(e) => {
+                        e.target.onerror = null; // Prevents looping
+                        e.target.src = "../../public/Food.svg";
+                    }}
+                />
 
-            {/* Render the PopupBox component */}
-            {showPopup && <PopupBox recipeId={id} onClose={() => setShowPopup(false)} />}
+                <div className='details'>
+                    <p>Total: {recipe.numberOfFeedbacks || "No feedbacks yet!"}</p>
+                    <p>Ratings: {recipe.averageRating || "No ratings yet!"}</p>
+                    <p>Dietary Preference: {recipe.dietaryPreference}</p>
+                    <p>Cooking Time: {recipe.cookingTime}</p>
+                    <p>Servings: {recipe.servings}</p>
+                    <p>Category: {recipe.categories}</p>
+                    <p>Preparation Time: {recipe.preparationTime}</p>
+                    <p>Difficulty Level: {recipe.difficultyLevel}</p>
+                    
+                    {/* Button to show popup */}
+                    <p className='fav-btn' onClick={() => setShowPopup(true)}><IoHeartOutline className="fav-icon"/></p>
+
+                    {/* Render the PopupBox component */}
+                    {showPopup && <PopupBox recipeId={id} onClose={() => setShowPopup(false)} />}
+                </div>
+
+            </div>
+
+
 
             <h2>Ingredients</h2>
             <pre>{recipe.ingredients}</pre>
             <h2>Instructions</h2>
             <pre>{recipe.instructions}</pre>
-            <h3>Dietary Preference: {recipe.dietaryPreference}</h3>
-            <h3>Cooking Time: {recipe.cookingTime}</h3>
-            <h3>Servings: {recipe.servings}</h3>
-            <h3>Category: {recipe.categories}</h3>
-            <h3>Preparation Time: {recipe.preparationTime}</h3>
-            <h3>Difficulty Level: {recipe.difficultyLevel}</h3>
+
             <h3>
                 Posted by: {recipe.User?.name}
                 {" "}

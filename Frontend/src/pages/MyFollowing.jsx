@@ -28,27 +28,34 @@ export default function MyFollowing() {
     return (
         <div className='container'>
             <h2>Following</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
+            {
+                following.length > 0 ?
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
 
-                <tbody>
-                    {following.map((user) => (
-                        <tr key={user.id} >
-                            <td>
-                                <p>{user.name}</p>
-                            </td>
-                            <td>
-                                <button className='btn-unfollow' onClick={() => handleUnfollowUser(user.id)}>Unfollow</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                        <tbody>
+                            {following.map((user) => (
+                                <tr key={user.id} >
+                                    <td>
+                                        <p>{user.name}</p>
+                                    </td>
+                                    <td>
+                                        <button className='btn-unfollow' onClick={() => handleUnfollowUser(user.id)}>Unfollow</button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                    :
+
+                    <h3>No Following Yet!</h3>
+            }
         </div>
     )
 }

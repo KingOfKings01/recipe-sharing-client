@@ -1,0 +1,81 @@
+.head-box{
+  display: flex;
+  justify-content: space-between;
+  
+  div{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    input, button{
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    
+    button{
+      background-color: #007bff;
+      color: white;
+      border: none;
+
+      &:hover{
+        background-color: #0069d9;
+      }
+    }
+  }
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap; /* Allows wrapping if the content exceeds the width */
+  gap: 20px; /* Adds space between the filter options */
+  align-items: center; /* Aligns the items vertically in the center */
+
+  .filter-option {
+    display: flex;
+    flex-direction: column;
+    margin-right: 20px; /* Adds some spacing between filter options */
+  }
+
+  .filter-option label {
+    margin-bottom: 5px; /* Adds space between label and input */
+  }
+
+  .filter-option input,
+  .filter-option select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+  .min-max {
+    input {
+      width: 80px;
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+  }
+
+  button {
+    padding: 5px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    &:hover {
+      background-color: #0069d9;
+    }
+  }
+}

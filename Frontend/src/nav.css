@@ -8,6 +8,10 @@ nav ul {
   nav li {
     margin-right: 20px;
   }
+
+  .logout-btn{
+    width: 100%;
+  }
   
   .dropdown {
     position: relative;

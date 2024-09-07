@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getContainers, createContainer, addRecipeToFavorites } from '../API/favoritesApi'; // Assuming you have these API functions
+import PropTypes from 'prop-types';
 
 function PopupBox({ recipeId, onClose }) {
     const [containers, setContainers] = useState([]);
@@ -37,7 +38,8 @@ function PopupBox({ recipeId, onClose }) {
 
     const handleAddRecipe = async (containerId) => {
         try {
-            const values = {containerId, recipeId}
+            const values = { containerId, recipeId }
+            console.log(values);
             const response = await addRecipeToFavorites(values); // Add recipe to the selected container
             console.log(response);
             alert(`Recipe added`); // Display success message
@@ -54,25 +56,32 @@ function PopupBox({ recipeId, onClose }) {
 
                 {showCreateForm ? (
                     <div>
-                        <h2>Create a New Container</h2>
-                        <input
-                            type="text"
-                            value={newContainerName}
-                            onChange={(e) => setNewContainerName(e.target.value)}
-                            placeholder="Enter container name"
-                        />
-                        <button onClick={handleCreateContainer} disabled={!newContainerName}>
-                            Create Container
-                        </button>
-                        <button onClick={() => setShowCreateForm(false)}>
-                            Back to Container List
-                        </button>
+                        <h2>Create a New List</h2>
+                        <div className='list-form'>
+                            <input
+                                type="text"
+                                value={newContainerName}
+                                onChange={(e) => setNewContainerName(e.target.value)}
+                                placeholder="Enter list name"
+                            />
+
+                            <div className='options'>
+                                <button onClick={handleCreateContainer} disabled={!newContainerName}>
+                                    create list
+                                </button>
+                                <button className='cancel-btn' onClick={() => setShowCreateForm(false)}>
+                                    cancel
+                                </button>
+                            </div>
+
+                        </div>
+
                     </div>
                 ) : (
                     <div>
-                        <h2>Select a Container</h2>
+                        <h2>Select a List</h2>
                         {loading ? (
-                            <p>Loading containers...</p>
+                            <p>Loading lists...</p>
                         ) : error ? (
                             <p>Error: {error}</p>
                         ) : containers.length > 0 ? (
@@ -80,22 +89,27 @@ function PopupBox({ recipeId, onClose }) {
                                 <div
                                     key={container.id}
                                     onClick={() => handleAddRecipe(container.id)}
-                                    style={{ cursor: 'pointer', margin: '10px 0', padding: '5px', border: '1px solid #ccc', color: 'black' }}
+                                    className='list'
                                 >
                                     {container.name}
                                 </div>
                             ))
                         ) : (
-                            <p>No containers found.</p>
+                            <p>No list found.</p>
                         )}
-                        <button onClick={() => setShowCreateForm(true)}>
-                            Create New Container
+                        <button className='add-btn' onClick={() => setShowCreateForm(true)}>
+                            New List
                         </button>
                     </div>
                 )}
             </div>
         </div>
     );
+}
+
+PopupBox.propTypes = {
+    recipeId: PropTypes.string,
+    onClose: PropTypes.func,
 }
 
 export default PopupBox;
