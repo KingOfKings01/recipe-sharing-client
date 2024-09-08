@@ -41,9 +41,7 @@ export default function Home() {
       searchTerm,
     };
     const data = await browseAndSearchRecipes(filters); // Make API call with filters
-    console.log(data);
     setRecipes(data);
-    setSearchTerm("")
     setLoading(false);
   }
 
@@ -56,7 +54,6 @@ export default function Home() {
       searchTerm,
     };
     const data = await browseAndSearchRecipes(filters); // Make API call with filters
-    console.log(data);
     setRecipes(data);
     setSearchTerm("")
     setLoading(false);

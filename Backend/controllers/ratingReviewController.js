@@ -1,14 +1,17 @@
 import RatingReview from '../models/RatingReview.js';
+import Recipe from '../models/Recipe.js';
 import User from '../models/User.js';
 import { Op } from 'sequelize';
 
 
-// Create a new rating and review
+
+//Todo: Create a new rating and review and update average rating and number of feedbacks.
 export async function createRatingReview(req, res) {
   try {
     const { rating, review, recipeId } = req.body;
     const userId = req.user.id; // Assuming user is authenticated and `req.user` contains user info
 
+    // Create the new rating and review
     const newRatingReview = await RatingReview.create({
       rating,
       review,
@@ -16,11 +19,35 @@ export async function createRatingReview(req, res) {
       userId,
     });
 
-    res.status(201).json(newRatingReview);
+    // Fetch the current recipe details
+    const recipe = await Recipe.findByPk(recipeId);
+
+    if (!recipe) {
+      return res.status(404).json({ message: 'Recipe not found' });
+    }
+
+    // Calculate the new average rating and increment the number of feedbacks
+    const newNumberOfFeedbacks = recipe.numberOfFeedbacks + 1;
+    const newAverageRating = 
+      (recipe.averageRating * recipe.numberOfFeedbacks + rating) / newNumberOfFeedbacks;
+
+    // Update the recipe with the new average rating and number of feedbacks
+    recipe.averageRating = newAverageRating;
+    recipe.numberOfFeedbacks = newNumberOfFeedbacks;
+
+    await recipe.save(); // Save the updated recipe
+
+    // Respond with the created rating/review and updated recipe
+    res.status(201).json({
+      ratingReview: newRatingReview,
+      updatedRecipe: recipe
+    });
+
   } catch (error) {
     res.status(500).json({ message: 'Failed to create rating and review', error: error.message });
   }
 }
+
 
 
 // Get all reviews for a recipe and prioritize the current user's feedback if it exists

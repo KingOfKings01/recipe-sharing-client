@@ -19,12 +19,12 @@ export default function MyRecipes() {
             }
         }
         fetchRecipes();
-    }, []);
+    }, [setIsEdit]);
 
     const handleUpdateRecipe = (recipe) => {
-        setIsEdit(true);
         setPreInitialValues(recipe)
         setShowRecipeForm(true);
+        setIsEdit(false);
     }
 
     const handleDeleteRecipe = async (recipeId) => {

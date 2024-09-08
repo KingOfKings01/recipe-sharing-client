@@ -43,11 +43,15 @@ export const loginUser = async (req, res) => {
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "This account is not exist." });
+    }
+
+    if (!user.approved) {
+      return res.status(403).json({ message: "This account is Bad!" });
     }
 
     if (!(await user.comparePassword(password))) {
-      return res.status(401).json({ message: "User not authorized" });
+      return res.status(401).json({ message: "Password didn't match." });
     }
 
     const token = User.generateToken({ id: user.id, name: user.name });

@@ -1,4 +1,5 @@
 import Follower from "../models/Follower.js";
+import Recipe from "../models/Recipe.js";
 import User from "../models/User.js";
 
 // Follow a user
@@ -94,15 +95,10 @@ export const getFollowers = async (req, res) => {
   }
 };
 
-
 // Get users a user is following
 export const getFollowing = async (req, res) => {
   try {
     const userId = req.user.id;
-
-    console.log(userId);
-    console.log(userId);
-    console.log(userId);
 
     const followers = await Follower.findAll({
       where: { followerId: userId },
@@ -115,11 +111,14 @@ export const getFollowing = async (req, res) => {
         const followingId = user.dataValues.followingId;
         const followerUser = await User.findByPk(followingId, {
           attributes: ["id","name"],
+          include: {
+            model: Recipe,
+            attributes: ['id', 'title'],
+          }
         });
         return followerUser
       })
     );
-
 
     res.status(200).json(followersName);
   } catch (error) {

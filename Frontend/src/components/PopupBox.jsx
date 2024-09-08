@@ -13,6 +13,7 @@ function PopupBox({ recipeId, onClose }) {
         // Fetch all containers on component mount
         const fetchContainers = async () => {
             try {
+                setLoading(true);
                 const data = await getContainers(); // Fetch all containers
                 setContainers(data);
                 setLoading(false);
@@ -39,9 +40,7 @@ function PopupBox({ recipeId, onClose }) {
     const handleAddRecipe = async (containerId) => {
         try {
             const values = { containerId, recipeId }
-            console.log(values);
-            const response = await addRecipeToFavorites(values); // Add recipe to the selected container
-            console.log(response);
+            await addRecipeToFavorites(values); // Add recipe to the selected container
             alert(`Recipe added`); // Display success message
             onClose(); // Close the popup box after adding the recipe
         } catch (err) {

@@ -38,6 +38,7 @@ export default function Nav() {
                 {dropdownOpen && (
                   <div className="dropdown-content">
                     <Link to="/my-recipes">My Recipes</Link>
+                    <Link to="/my-favorites">My Favorites</Link>
                     <Link to="/my-followers">My Followers</Link>
                     <Link to="/my-following">My Following</Link>
                     <button className='logout-btn' onClick={handleLogout}>Log Out</button>

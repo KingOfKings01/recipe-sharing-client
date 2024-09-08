@@ -1,4 +1,6 @@
-import FavoritesContainer from '../models/FavoritesContainer.js';
+import FavoritesContainer from "../models/FavoritesContainer.js";
+import FavoritesRecipes from '../models/FavoritesRecipes.js';
+import Recipe from '../models/Recipe.js';
 
 // Create a new favorites container
 export const createContainer = async (req, res) => {
@@ -21,8 +23,23 @@ export const createContainer = async (req, res) => {
 export const getContainers = async (req, res) => {
   try {
     const userId = req.user.id;
-    const containers = await FavoritesContainer.findAll({ where: { userId } });
-
+    const containers = await FavoritesContainer.findAll({
+      where: { userId },
+      attributes: ["id", "name"],
+      include: [
+        {
+          model: FavoritesRecipes,
+          as: 'recipes', // Alias used in hasMany association
+          attributes: ["id"], // Exclude all columns from FavoritesRecipes itself
+          include: [
+            {
+              model: Recipe,
+              attributes: ['id', 'title'], // Specify the columns to be retrieved from Recipe
+            },
+          ],
+        },
+      ],
+    });
     res.status(200).json(containers);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -35,7 +52,9 @@ export const deleteContainer = async (req, res) => {
     const { containerId } = req.params;
     const userId = req.user.id;
 
-    const container = await FavoritesContainer.findOne({ where: { id: containerId, userId } });
+    const container = await FavoritesContainer.findOne({
+      where: { id: containerId, userId },
+    });
     if (!container) {
       return res.status(404).json({ message: "Container not found" });
     }

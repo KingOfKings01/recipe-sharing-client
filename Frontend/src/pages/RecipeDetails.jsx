@@ -18,6 +18,7 @@ function RecipeDetails() {
     const [loadingFollow, setLoadingFollow] = useState(false);
     const [reviews, setReviews] = useState([]);
     const [loadingReviews, setLoadingReviews] = useState(true);
+    // eslint-disable-next-line no-unused-vars
     const [reviewError, setReviewError] = useState(null);
     const [showFeedbackForm, setShowFeedbackForm] = useState(true);
     const [showPopup, setShowPopup] = useState(false); // State to control popup visibility
@@ -56,7 +57,6 @@ function RecipeDetails() {
                 setLoadingReviews(false);
             }
         };
-
         fetchReviews();
     }, [id]);
 
@@ -106,9 +106,17 @@ function RecipeDetails() {
                     <p>Category: {recipe.categories}</p>
                     <p>Preparation Time: {recipe.preparationTime}</p>
                     <p>Difficulty Level: {recipe.difficultyLevel}</p>
-                    
+
+                    <p>
+                        Posted by: {recipe.User?.name}
+                        {" "}
+                        {isFollowing != null && <button className={isFollowing ? "Unfollow" : "Follow"} onClick={handleFollowToggle} disabled={loadingFollow}>
+                            {loadingFollow ? "Processing..." : isFollowing ? "Unfollow" : "Follow"}
+                        </button>}
+                    </p>
+
                     {/* Button to show popup */}
-                    <p className='fav-btn' onClick={() => setShowPopup(true)}><IoHeartOutline className="fav-icon"/></p>
+                    <p className='fav-btn' onClick={() => setShowPopup(true)}><IoHeartOutline className="fav-icon" /></p>
 
                     {/* Render the PopupBox component */}
                     {showPopup && <PopupBox recipeId={id} onClose={() => setShowPopup(false)} />}
@@ -123,34 +131,34 @@ function RecipeDetails() {
             <h2>Instructions</h2>
             <pre>{recipe.instructions}</pre>
 
-            <h3>
-                Posted by: {recipe.User?.name}
-                {" "}
-                {isFollowing != null && <button onClick={handleFollowToggle} disabled={loadingFollow}>
-                    {loadingFollow ? "Processing..." : isFollowing ? "Unfollow" : "Follow"}
-                </button>}
-            </h3>
 
             {/* Feedback and Rating Form */}
-            {showFeedbackForm && <FeedbackAndRatingForm
-                recipeId={id}
-                initialFeedback=""
-                initialRating={0}
-            />}
+            {showFeedbackForm &&
+                <>
+                    <hr />
+                    <FeedbackAndRatingForm
+                        recipeId={id}
+                        initialFeedback=""
+                        initialRating={0}
+                        setShowFeedbackForm={setShowFeedbackForm}
+                    />
+                </>
+
+            }
+
+            <hr />
 
             {/* Reviews Section */}
             <h2>Reviews</h2>
             {loadingReviews ? (
                 <p>Loading reviews...</p>
-            ) : reviewError ? (
-                <p>Error loading reviews: {reviewError}</p>
             ) : reviews.length > 0 ? (
                 reviews.map(review => (
                     <div key={review.id}>
-                        <p>By: {review.User.name}</p>
-                        <h4>Rating: {review.rating}</h4>
-                        <p>{review.review}</p>
-                        <hr />
+                        <p><strong>Rating:</strong> {review.rating}</p>
+                        <p><strong>Feedback:</strong> {review.review}</p>
+                        <p><strong>By:</strong> {review.User.name}</p>
+                        <hr />  
                     </div>
                 ))
             ) : (

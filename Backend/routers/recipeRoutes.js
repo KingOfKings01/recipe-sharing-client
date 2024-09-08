@@ -33,7 +33,6 @@ router.get('/user',authorization, getUserRecipes);
 // Search for recipes by name or ingredient, etc.
 router.get('/search', browseAndSearchRecipes);
 
-
 // Update a recipe
 router.put('/:id',authorization, updateRecipe);
 

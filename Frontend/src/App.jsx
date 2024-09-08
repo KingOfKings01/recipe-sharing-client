@@ -7,6 +7,7 @@ import Nav from './components/Nav';
 import MyRecipes from './pages/MyRecipes';
 import MyFollowers from './pages/MyFollowers';
 import MyFollowing from './pages/MyFollowing';
+import MyFavoritesRecipes from './pages/MyFavoritesRecipes';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/my-recipes" element={<MyRecipes />} />
         <Route path="/my-followers" element={<MyFollowers />} />
         <Route path="/my-following" element={<MyFollowing />} />
+        <Route path="/my-favorites" element={<MyFavoritesRecipes />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="*" element={<>404 Page not found</>} />

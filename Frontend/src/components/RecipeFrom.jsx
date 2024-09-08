@@ -3,7 +3,7 @@ import { createRecipe, updateRecipe } from '../API/recipeApis'; // Import your A
 import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
 
-function RecipeForm({ isEdit, preInitialValues }) {
+function RecipeForm({ isEdit, preInitialValues, setPreInitialValues }) {
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -67,6 +67,7 @@ function RecipeForm({ isEdit, preInitialValues }) {
 
             setFormData(initialValues);
             alert(isEdit ? 'Recipe updated successfully!' : 'Recipe created successfully!');
+            setPreInitialValues(false)
         } catch (err) {
             console.error(err);
             alert(err.message);
@@ -240,7 +241,8 @@ function RecipeForm({ isEdit, preInitialValues }) {
 
 RecipeForm.propTypes = {
     isEdit: PropTypes.bool,
-    preInitialValues: PropTypes.object
+    preInitialValues: PropTypes.object,
+    setPreInitialValues: PropTypes.func
 }
 
 export default RecipeForm;

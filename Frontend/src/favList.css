@@ -1,0 +1,33 @@
+.delete-btn, .remove-btn{
+    padding: 5px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #e12b2b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    transition: background-color 0.3s ease;
+    &:hover {
+      background-color: #d90000;
+    }
+}
+
+.fav-containers{
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    p{
+        font-size: larger;
+        font-weight: bold;
+    }
+}
+
+.fav-list{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+}
